@@ -65,5 +65,7 @@ Roles assigned
    - Done
 
 Links
+GitHub repository : gh repo clone messingandijoseph-source/ai-study-companion
+Trello compagnion : https://trello.com/invite/b/6926e9852adad8f0de8c7917/ATTI59071d1910c25ecf0af61102b52a7591EEE421EA/ai-study-companion-project-board
 ➡ GitHub Repository: (insert link)
 ➡ Trello Board: (insert link)
