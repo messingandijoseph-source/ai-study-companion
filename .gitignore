@@ -43,3 +43,39 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+# Flutter
+.build/
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+android/.gradle/
+ios/Pods/
+*.lock
+
+# Node.js / Firebase
+node_modules/
+npm-debug.log
+yarn-error.log
+functions/node_modules/
+
+# Python (AI models)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Environment files
+*.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
