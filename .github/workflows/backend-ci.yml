@@ -1,0 +1,33 @@
+name: Backend CI Pipeline
+
+on:
+  push:
+    paths:
+      - "backend/**"
+  pull_request:
+    paths:
+      - "backend/**"
+
+jobs:
+  build-user-service:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          cd backend/backend/user-service
+          npm install
+
+      - name: Run basic service check
+        run: |
+          cd backend/backend/user-service
+          node src/index.js &
+          sleep 5

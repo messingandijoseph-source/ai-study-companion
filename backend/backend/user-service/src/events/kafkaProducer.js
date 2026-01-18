@@ -1,34 +1,22 @@
-const { Kafka } = require("kafkajs");
+const { Kafka } = require('kafkajs');
 
-const kafka = new Kafka({
-  clientId: "user-service",
-  brokers: ["localhost:9092"]
-});
+let producer;
 
-const producer = kafka.producer();
+async function initKafkaProducer() {
+  if (producer) return producer;
 
-async function connectProducer() {
-  await producer.connect();
-  console.log("Kafka Producer connected");
-}
-
-async function publishUserCreatedEvent(user) {
-  await producer.send({
-    topic: "user.created",
-    messages: [
-      {
-        key: user.id,
-        value: JSON.stringify({
-          eventType: "UserCreated",
-          payload: user,
-          timestamp: new Date().toISOString()
-        })
-      }
-    ]
+  const kafka = new Kafka({
+    clientId: 'user-service',
+    brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
   });
+
+  producer = kafka.producer();
+  await producer.connect();
+
+  console.log('✅ Kafka producer connected');
+  return producer;
 }
 
 module.exports = {
-  connectProducer,
-  publishUserCreatedEvent
+  initKafkaProducer,
 };

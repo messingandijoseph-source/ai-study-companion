@@ -1,19 +1,19 @@
-# Use Node.js official image
-FROM node:18
+# Use official Node.js LTS image
+FROM node:18-alpine
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy dependency files first (for caching)
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --only=production
 
-# Copy source code
+# Copy application source
 COPY src ./src
 
-# Expose port 3000 for the service
+# Expose service port
 EXPOSE 3000
 
 # Start the service
