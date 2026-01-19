@@ -1,5 +1,5 @@
 //repository pattern (data access)
-const pool = require("../db/pg.client");
+/*const pool = require("../db/pg.client");
 const { randomUUID } = require("crypto");
 
 class UserRepository {
@@ -24,4 +24,42 @@ class UserRepository {
   }
 }
 
-module.exports = new UserRepository();
+module.exports = new UserRepository();*/
+
+//patern used is the repository having as benefit that DB
+//can change without touching logic
+class UserRepository {
+  constructor(dbClient) {
+    this.db = dbClient;
+  }
+
+  async create(user) {
+    const { name, email } = user;
+    const result = await this.db.query(
+      'INSERT INTO users(name, email) VALUES($1, $2) RETURNING *',
+      [name, email]
+    );
+    return result.rows[0];
+  }
+
+  async findById(id) {
+    const result = await this.db.query(
+      'SELECT * FROM users WHERE id = $1',
+      [id]
+    );
+    return result.rows[0];
+  }
+
+  async findAll() {
+    const result = await this.db.query('SELECT * FROM users');
+    return result.rows;
+  }
+
+  async delete(id) {
+    await this.db.query('DELETE FROM users WHERE id = $1', [id]);
+    return true;
+  }
+}
+
+module.exports = UserRepository;
+
