@@ -1,22 +1,34 @@
 const { Kafka } = require('kafkajs');
 
-let producer;
+let producer = null;
 
 async function initKafkaProducer() {
-  if (producer) return producer;
+  try {
+    const kafka = new Kafka({
+      clientId: 'user-service',
+      brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+    });
 
-  const kafka = new Kafka({
-    clientId: 'user-service',
-    brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+    producer = kafka.producer();
+    await producer.connect();
+
+    console.log('✅ Kafka producer connected');
+  } catch (error) {
+    console.warn('⚠️ Kafka not available, continuing without it');
+    producer = null;
+  }
+}
+
+async function publishUserCreatedEvent(payload) {
+  if (!producer) return;
+
+  await producer.send({
+    topic: 'user.created',
+    messages: [{ value: JSON.stringify(payload) }],
   });
-
-  producer = kafka.producer();
-  await producer.connect();
-
-  console.log('✅ Kafka producer connected');
-  return producer;
 }
 
 module.exports = {
   initKafkaProducer,
+  publishUserCreatedEvent,
 };

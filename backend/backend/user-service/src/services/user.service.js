@@ -19,7 +19,7 @@ class UserService {
   }
 }
 
-module.exports = new UserService(); */
+module.exports = new UserService(); 
 
 
 // pattern used is service layer and benefit is
@@ -44,6 +44,63 @@ class UserService {
 
   async deleteUser(id) {
     return this.userRepository.delete(id);
+  }
+}
+
+module.exports = UserService;
+
+
+
+const { publishUserCreatedEvent } = require('../events/kafkaProducer');
+
+class UserService {
+  constructor(userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  async createUser(userData) {
+    const user = await this.userRepository.create(userData);
+
+    // Fire-and-forget event
+    await publishUserCreatedEvent({
+      id: user.id,
+      email: user.email,
+      createdAt: user.created_at,
+    });
+
+    return user;
+  }
+
+  async getAllUsers() {
+    return this.userRepository.findAll();
+  }
+}
+
+module.exports = UserService;       */
+
+const bcrypt = require("bcrypt");
+
+class UserService {
+  constructor(userRepository, eventBus) {
+    this.userRepository = userRepository;
+    this.eventBus = eventBus;
+  }
+
+  async createUser({ email, password }) {
+    // 1. Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // 2. Persist user
+    const user = await this.userRepository.create({
+      email,
+      passwordHash
+    });
+
+    return user;
+  }
+
+  async getAllUsers() {
+    return this.userRepository.findAll();
   }
 }
 

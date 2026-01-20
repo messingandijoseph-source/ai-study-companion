@@ -28,7 +28,7 @@ module.exports = new UserRepository();*/
 
 //patern used is the repository having as benefit that DB
 //can change without touching logic
-class UserRepository {
+/*class UserRepository {
   constructor(dbClient) {
     this.db = dbClient;
   }
@@ -62,4 +62,39 @@ class UserRepository {
 }
 
 module.exports = UserRepository;
+*/
 
+
+const { v4: uuidv4 } = require("uuid");
+
+class UserRepository {
+  constructor(db) {
+    this.db = db;
+  }
+
+  async create({ email, passwordHash }) {
+    const query = `
+      INSERT INTO users (id, email, password_hash)
+      VALUES ($1, $2, $3)
+      RETURNING id, email, created_at;
+    `;
+
+    const values = [
+      uuidv4(),
+      email,
+      passwordHash
+    ];
+
+    const { rows } = await this.db.query(query, values);
+    return rows[0];
+  }
+
+  async findAll() {
+    const { rows } = await this.db.query(
+      "SELECT id, email, created_at FROM users"
+    );
+    return rows;
+  }
+}
+
+module.exports = UserRepository;
