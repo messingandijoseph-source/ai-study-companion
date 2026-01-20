@@ -5,6 +5,7 @@ const dbClient = require('./db/pg.client');
 const UserRepository = require('./repositories/user.repository');
 const UserService = require('./services/user.service');
 const userRoutes = require('./routes/user.routes');
+const authRoutes = require('./routes/auth.routes');
 const { initKafkaProducer } = require('./events/kafkaProducer');
 
 const app = express();
@@ -23,6 +24,7 @@ const userService = new UserService(userRepository);
  * Routes
  * ============================
  */
+app.use('/api/auth', authRoutes(userService));
 app.use('/api/users', userRoutes(userService));
 
 app.get('/health', (_, res) => {
@@ -45,7 +47,7 @@ async function startServer() {
     await dbClient.connect();
     console.log('✅ PostgreSQL connected');
 
-    // Kafka is OPTIONAL
+    // Kafka is OPTIONAL (non-blocking)
     initKafkaProducer();
 
     app.listen(PORT, () => {

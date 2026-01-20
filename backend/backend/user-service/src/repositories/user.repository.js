@@ -79,13 +79,20 @@ class UserRepository {
       RETURNING id, email, created_at;
     `;
 
-    const values = [
+    const { rows } = await this.db.query(query, [
       uuidv4(),
       email,
       passwordHash
-    ];
+    ]);
 
-    const { rows } = await this.db.query(query, values);
+    return rows[0];
+  }
+
+  async findByEmail(email) {
+    const { rows } = await this.db.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
     return rows[0];
   }
 

@@ -79,30 +79,41 @@ class UserService {
 module.exports = UserService;       */
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 class UserService {
-  constructor(userRepository, eventBus) {
+  constructor(userRepository) {
     this.userRepository = userRepository;
-    this.eventBus = eventBus;
   }
 
   async createUser({ email, password }) {
-    // 1. Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // 2. Persist user
-    const user = await this.userRepository.create({
+    return await this.userRepository.create({
       email,
       passwordHash
     });
-
-    return user;
   }
 
-  async getAllUsers() {
-    return this.userRepository.findAll();
+  async login({ email, password }) {
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+
+    const isValid = await bcrypt.compare(password, user.password_hash);
+    if (!isValid) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = jwt.sign(
+      { userId: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN }
+    );
+
+    return { token };
   }
 }
 
 module.exports = UserService;
-
