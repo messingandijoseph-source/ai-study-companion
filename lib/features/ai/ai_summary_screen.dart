@@ -11,10 +11,12 @@ class AISummaryScreen extends StatefulWidget {
 class _AISummaryScreenState extends State<AISummaryScreen> {
   String result = "";
   bool loading = false;
+  String userNotesFromDatabase = "";
 
   void summarize() async {
     setState(() => loading = true);
-    result = await AIService.summarizeNotes("My long study notes here...");
+    result = await AIService.summarizeNotes(userNotesFromDatabase);
+
     setState(() => loading = false);
   }
 

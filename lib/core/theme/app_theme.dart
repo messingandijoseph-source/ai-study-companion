@@ -81,18 +81,17 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static const Color skyBlue = Color(0xFF87CEEB);
   static const Color deepNavy = Color(0xFF0A192F);
-  static const Color surfaceNavy = Color(0xFF1C2C4E); // Slightly lighter navy
+  static const Color surfaceNavy = Color(0xFF1C2C4E);
   static const Color pureWhite = Color(0xFFFFFFFF);
   static const Color softBlue = Color(0xFFE1F5FE); // For light accents
+  static const Color slateGrey = Color(0xFF64748B); // For soft light-mode text
 
+  // --- DARK THEME ---
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-
-    // Scaffolding with a hint of light blue reflection
     scaffoldBackgroundColor: const Color(0xFF0D1B3E),
     primaryColor: skyBlue,
-
     textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme)
         .copyWith(
           displayLarge: const TextStyle(
@@ -101,24 +100,55 @@ class AppTheme {
           ),
           bodyLarge: const TextStyle(color: softBlue),
         ),
-
     colorScheme: const ColorScheme.dark(
       primary: skyBlue,
-      secondary: pureWhite, // Adding white as secondary for contrast
+      secondary: pureWhite,
       surface: surfaceNavy,
       onSurface: pureWhite,
     ),
+    inputDecorationTheme: _inputTheme(isDark: true),
+    elevatedButtonTheme: _buttonTheme(),
+  );
 
-    inputDecorationTheme: InputDecorationTheme(
+  // --- LIGHT THEME (New) ---
+  static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: pureWhite,
+    primaryColor: skyBlue,
+    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme)
+        .copyWith(
+          displayLarge: const TextStyle(
+            color: deepNavy,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyLarge: const TextStyle(color: deepNavy),
+          bodyMedium: const TextStyle(color: slateGrey),
+        ),
+    colorScheme: const ColorScheme.light(
+      primary: skyBlue,
+      secondary: deepNavy,
+      surface: softBlue,
+      onSurface: deepNavy,
+    ),
+    inputDecorationTheme: _inputTheme(isDark: false),
+    elevatedButtonTheme: _buttonTheme(),
+  );
+
+  // Reusable Input Style
+  static InputDecorationTheme _inputTheme({required bool isDark}) {
+    return InputDecorationTheme(
       filled: true,
-      fillColor: pureWhite.withOpacity(0.08), // Brighter input background
+      fillColor: isDark
+          ? pureWhite.withOpacity(0.08)
+          : skyBlue.withOpacity(0.05),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: skyBlue.withOpacity(0.1)),
+        borderSide: BorderSide(color: skyBlue.withOpacity(isDark ? 0.1 : 0.2)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
@@ -126,16 +156,24 @@ class AppTheme {
       ),
       labelStyle: const TextStyle(color: skyBlue, fontWeight: FontWeight.w500),
       prefixIconColor: skyBlue,
-    ),
+    );
+  }
 
-    elevatedButtonTheme: ElevatedButtonThemeData(
+  // Reusable Button Style
+  static ElevatedButtonThemeData _buttonTheme() {
+    return ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: skyBlue,
         foregroundColor: deepNavy,
+        padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        elevation: 8,
-        shadowColor: skyBlue.withOpacity(0.4),
+        elevation: 4,
+        shadowColor: skyBlue.withOpacity(0.3),
+        textStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

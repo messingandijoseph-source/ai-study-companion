@@ -1,54 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:permission_handler/permission_handler.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+class NotificationService {
+  static final _notifications = FlutterLocalNotificationsPlugin();
 
-  @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
-}
+  static Future<void> init() async {
+    // Adjustment 1: Explicitly request permission for Android 13+
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
 
-class _NotificationScreenState extends State<NotificationScreen> {
-  List notifications = [];
-  bool loading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchNotifications();
-  }
-
-  Future<void> fetchNotifications() async {
-    final response = await http.get(
-      Uri.parse("http://YOUR_VPS_IP:3000/api/notifications"),
-      headers: {"Authorization": "Bearer YOUR_JWT_TOKEN"},
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
     );
 
-    if (response.statusCode == 200) {
-      setState(() {
-        notifications = jsonDecode(response.body);
-        loading = false;
-      });
-    }
+    const settings = InitializationSettings(android: androidSettings);
+
+    await _notifications.initialize(settings);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+  static Future<void> showInstant({
+    required String title,
+    required String body,
+  }) async {
+    const androidDetails = AndroidNotificationDetails(
+      'study_alerts',
+      'Study Alerts',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
 
-    return ListView.builder(
-      itemCount: notifications.length,
-      itemBuilder: (_, i) {
-        final n = notifications[i];
-        return ListTile(
-          title: Text(n['title']),
-          subtitle: Text(n['body']),
-          trailing: n['is_read'] ? null : const Icon(Icons.circle, size: 10),
-        );
-      },
+    await _notifications.show(
+      DateTime.now().hashCode, // Unique ID
+      title,
+      body,
+      const NotificationDetails(android: androidDetails),
+    );
+  }
+
+  static Future<void> schedule({
+    required String title,
+    required String body,
+    required DateTime time,
+  }) async {
+    // Ensure the time is converted correctly to TZDateTime
+    final scheduledDate = tz.TZDateTime.from(time, tz.local);
+
+    await _notifications.zonedSchedule(
+      time.hashCode, // Unique ID
+      title,
+      body,
+      scheduledDate,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'study_alerts',
+          'Study Alerts',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      ),
+      // In latest versions, we only need the schedule mode for Android
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }
 }
