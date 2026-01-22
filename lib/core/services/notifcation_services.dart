@@ -2,12 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_messaging/firebase_messaging.dart'; // Add this import
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
 
   static Future<void> init() async {
-    // Adjustment 1: Explicitly request permission for Android 13+
+    // 1. Firebase Messaging Permission Request
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    await messaging.requestPermission(alert: true, badge: true, sound: true);
+
+    // 2. Retrieve and Print FCM Token for verification
+    String? token = await messaging.getToken();
+    print("FCM TOKEN: $token");
+
+    // Adjustment 1: Explicitly request permission for Android 13+ (Local)
     if (await Permission.notification.isDenied) {
       await Permission.notification.request();
     }
@@ -45,7 +55,6 @@ class NotificationService {
     required String body,
     required DateTime time,
   }) async {
-    // Ensure the time is converted correctly to TZDateTime
     final scheduledDate = tz.TZDateTime.from(time, tz.local);
 
     await _notifications.zonedSchedule(
@@ -61,7 +70,6 @@ class NotificationService {
           priority: Priority.high,
         ),
       ),
-      // In latest versions, we only need the schedule mode for Android
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
     );
   }

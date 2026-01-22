@@ -1,69 +1,157 @@
+# Studyora
 
-AI-Powered Study Companion & Collaborative Revision System
-Software Design & Modelling – Semester Project
-Course Code: SE3140
-Instructor: Tekoh Palma Achu
+## 📘 Project Overview
 
-Project Overview
-The AI‑Powered Study Companion and Collaborative Revision System is a smart learning platform designed to help students plan, focus, revise, and collaborate effectively. It integrates AI‑based study scheduling, focus‑mode automation, personalized quiz generation, voice‑assistant tutoring, and real‑time peer study groups.
-The goal is to improve academic performance through intelligent automation, gamification, and social learning.
+**Studyora** is an AI-powered academic study companion designed to help students plan, manage, and improve their learning process. The application combines intelligent study assistance, smart notifications, and performance analysis to support students throughout their academic journey.
 
-Team Members
-SN	Name	Matricule	Role
-1	Joseph Messi	ICTU20201294	AI & DevOps Lead – AI engine, DevOps pipeline, schedule automation, quiz generator
-2	Tomi Leyla Kevine	ICTU20251458	UI/UX & System Design Lead – Wireframes, UML diagrams, architecture, frontend design
+This project is developed as a **purely academic project** at **The ICT University**, targeting primarily **secondary school and university students**, while remaining useful to all learners.
 
-📁 Repository Structure (Planned)
-/docs
-   ├── requirements/
-   ├── design/
-   ├── architecture/
-   └── uml-diagrams/
+---
 
- /app
-   ├── frontend/
-   ├── backend/
-   └── ai-engine/
+## 🎯 Objectives
 
- /devops
-   ├── docker/
-   └── ci-cd/
+* Assist students with AI-driven study support
+* Improve academic consistency through smart reminders
+* Provide intelligent summaries and insights from study notes
+* Encourage focused learning and collaboration
 
-README.md
+---
 
+## 👥 Team & Roles
 
-🎯 Project Goals
-- Build an intelligent study planner using AI‑generated schedules.
-- Implement a focus mode that reduces distractions and tracks study patterns.
-- Generate quizzes dynamically using NLP techniques.
-- Support collaborative study through real‑time peer groups.
-- Integrate DevOps (CI/CD, Docker, automated deployment).
-- Produce a complete report in LaTeX and final deployment on VPS.
+### Project Owner & CTO
 
-🛠️ Tech Stack
-Frontend: Flutter
-Backend: PHP / Node.js
-Database: MySQL
+**Tomi Kologni Leyla Kevine**
 
-AI Components: Python (ML/NLP)
+* HND in Industrial Computing and Automation
+* BSc in Artificial Intelligence (ongoing), The ICT University
+* Responsibilities:
 
-Real‑time: Firebase / Node.js
+  * System architecture design
+  * Mobile application development (Flutter)
+  * Backend integration
+  * DevOps coordination and deployment planning
 
-DevOps: GitHub Actions, Docker, VPS Deployment
-Project Management: Trello
-Team formed (2 members as required)
+### Scrum Master & Developer
 
-Roles assigned
-- GitHub repository established
-- Commit policy:
-- Feature branches → Pull Requests → Reviewed → Merged
-- Each member must commit weekly
-- Trello board with:
-   - To Do
-   - In Progress
-   - Review/Testing
-   - Done
+**Messi Ngandi Joseph Desire**
 
-Links
-GitHub repository : gh repo clone messingandijoseph-source/ai-study-companion
-Trello compagnion : https://trello.com/invite/b/6926e9852adad8f0de8c7917/ATTI59071d1910c25ecf0af61102b52a7591EEE421EA/ai-study-companion-project-board
+* BSc in Software Engineering, The ICT University
+* Responsibilities:
+
+  * Agile project coordination (Scrum)
+  * AI service development and integration
+  * Backend API collaboration
+
+---
+
+## 🧠 System Architecture Overview
+
+Studyora is built using a **modular microservice-inspired architecture**:
+
+* **Flutter Mobile App**: User interface, notifications, and interaction layer
+* **Main Backend (Node.js + PostgreSQL)**:
+
+  * User management
+  * Study groups
+  * Notifications logic
+* **AI Microservice (FastAPI – Python)**:
+
+  * Study assistant Q&A
+  * Notes summarization
+  * Study plan generation
+  * Performance prediction
+* **Messaging Layer (Kafka)**:
+
+  * Event-based communication
+  * Decoupling AI and core backend services
+* **Notification Service (Firebase Cloud Messaging)**:
+
+  * Push notifications
+* **Deployment**:
+
+  * VPS-based deployment using Docker containers
+
+---
+
+## 🚀 Features
+
+* AI-powered study assistant (Q&A)
+* Intelligent study plan generation
+* AI-based performance and academic risk prediction
+* Notes summarization
+* Smart notifications (missed sessions, reminders, risk alerts)
+* Focus mode to reduce distractions
+* Study groups (manual and AI-suggested)
+* User profiles with image upload
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+
+* Flutter (Android-first)
+
+### Backend
+
+* Node.js
+* PostgreSQL
+
+### AI Service
+
+* Python (FastAPI)
+
+### Messaging & Notifications
+
+* Apache Kafka
+* Firebase Cloud Messaging (FCM)
+
+### Deployment
+
+* Docker
+* VPS (Virtual Private Server)
+
+---
+
+## 🔌 API Documentation (High-Level)
+
+### AI Service Endpoints
+
+* `POST /ai/ask` – AI study assistant questions
+* `POST /ai/summarize` – Notes summarization
+* `GET /ai/group-suggest` – Study group suggestions
+
+### Backend Endpoints
+
+* User authentication & profile management
+* Study group creation and management
+* Notification scheduling
+
+> ⚠️ Detailed API specifications are private due to academic restrictions.
+
+---
+
+## 📚 Academic Context
+
+* Institution: **The ICT University**
+* Project Type: **Academic**
+* Visibility: **Private**
+
+This project is developed strictly for educational purposes and evaluation.
+
+---
+
+## 📌 License
+
+This project is **private and academic-only**. Redistribution or commercial use is not permitted without explicit authorization.
+
+---
+
+## ✅ Status
+
+🚧 Actively developed and integrated as part of academic coursework.
+
+---
+
+*Studyora — Learn smarter, stay focused, succeed academically.*

@@ -100,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
-}  */
+}  
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -284,5 +284,188 @@ class _RegisterScreenState extends State<RegisterScreen> {
       height: 250,
       decoration: BoxDecoration(shape: BoxShape.circle, color: color),
     ).animate().blur(begin: const Offset(30, 30), end: const Offset(60, 60));
+  }
+}  */
+
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../core/api/api_client.dart';
+import '../../core/services/focus_mode.dart';
+import '../home/home_screen.dart';
+import '../../core/theme/app_theme.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameCtrl = TextEditingController();
+  final _majorCtrl = TextEditingController(); // Added for Student context
+  final _passCtrl = TextEditingController();
+  final _focusService = FocusModeService();
+  bool _isLoading = false;
+
+  void _handleRegister() async {
+    // 1. Validation Check
+    if (_nameCtrl.text.isEmpty || _passCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please complete your profile")),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    // 2. Permission Check (The Studyora Shield Requirement)
+    bool hasFocusPerm = await _focusService.hasPermission();
+    if (!hasFocusPerm) {
+      setState(() => _isLoading = false);
+      _showPermissionDialog();
+      return;
+    }
+
+    // 3. Backend Logic (Preserved your delay/logic flow)
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Force engagement for a "Focus" app
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.surfaceNavy,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            const Icon(Icons.shield_outlined, color: AppTheme.skyBlue),
+            const SizedBox(width: 10),
+            const Text(
+              "Activate Shield",
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+        content: const Text(
+          "Studyora uses an AI Shield to block distractions (TikTok, Instagram, YouTube) while you study. Enable this now to start your first session.",
+          style: TextStyle(color: Colors.white70),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.skyBlue),
+            onPressed: () async {
+              Navigator.pop(context);
+              await _focusService.requestPermission();
+            },
+            child: const Text("ENABLE SHIELD"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppTheme.pureWhite, AppTheme.softBlue.withOpacity(0.3)],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            children: [
+              const SizedBox(height: 80),
+              // Hero Icon with pulsing effect
+              const Icon(
+                Icons.auto_awesome_motion_rounded,
+                size: 80,
+                color: AppTheme.skyBlue,
+              ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 2.seconds),
+
+              const SizedBox(height: 20),
+              const Text(
+                "Create Account",
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                  color: AppTheme.deepNavy,
+                ),
+              ).animate().fadeIn().slideY(begin: 0.3),
+
+              const Text(
+                "Join the Studyora ecosystem",
+                style: TextStyle(color: Colors.grey),
+              ),
+
+              const SizedBox(height: 40),
+
+              // Inputs with staggered entrance
+              _buildInput(_nameCtrl, "Full Name", Icons.person_outline),
+              const SizedBox(height: 20),
+              _buildInput(
+                _majorCtrl,
+                "Field of Study (e.g. IT, Law)",
+                Icons.school_outlined,
+              ),
+              const SizedBox(height: 20),
+              _buildInput(
+                _passCtrl,
+                "Secure Password",
+                Icons.lock_outline,
+                isPass: true,
+              ),
+
+              const SizedBox(height: 40),
+
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _handleRegister,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          color: AppTheme.deepNavy,
+                        )
+                      : const Text("START STUDYING"),
+                ),
+              ).animate().scale(delay: 400.ms),
+
+              const SizedBox(height: 20),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Already have an account? Login"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInput(
+    TextEditingController ctrl,
+    String label,
+    IconData icon, {
+    bool isPass = false,
+  }) {
+    return TextField(
+      controller: ctrl,
+      obscureText: isPass,
+      decoration: InputDecoration(labelText: label, prefixIcon: Icon(icon)),
+    ).animate().fadeIn(delay: 200.ms).slideX();
   }
 }

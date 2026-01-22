@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "616292724459",
+    "project_id": "studyora-b4423",
+    "storage_bucket": "studyora-b4423.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616292724459:android:45ca61078ef765943d18ae",
+        "android_client_info": {
+          "package_name": "com.example.ai_study_companion"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAT-FcOxspA3qBBOC0QDTQPAwSBGeNvc2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
